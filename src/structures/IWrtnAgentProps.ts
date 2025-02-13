@@ -1,7 +1,7 @@
 import { Primitive } from "typia";
 
+import { IWrtnAdditionalAgent } from "./IWrtnAdditionalAgent";
 import { IWrtnAgentConfig } from "./IWrtnAgentConfig";
-import { IWrtnAgentContext } from "./IWrtnAgentContext";
 import { IWrtnAgentController } from "./IWrtnAgentController";
 import { IWrtnAgentPrompt } from "./IWrtnAgentPrompt";
 import { IWrtnAgentProvider } from "./IWrtnAgentProvider";
@@ -27,7 +27,16 @@ import { IWrtnAgentProvider } from "./IWrtnAgentProvider";
  *
  * @author Samchon
  */
-export interface IWrtnAgentProps {
+export interface IWrtnAgentProps<
+  AgentExecutePlan extends Record<
+    | keyof AgentExecutePlan
+    | keyof typeof IWrtnAdditionalAgent.DEFAULT_CHATGPT_AGENT,
+    IWrtnAdditionalAgent<
+      | keyof AgentExecutePlan
+      | keyof typeof IWrtnAdditionalAgent.DEFAULT_CHATGPT_AGENT
+    >
+  >,
+> {
   /**
    * LLM service provider.
    */
@@ -53,7 +62,7 @@ export interface IWrtnAgentProps {
    * - `systemPrompt`: default prompts written in markdown
    *   - https://github.com/samchon/nestia/tree/master/packages/agent/prompts
    */
-  config?: IWrtnAgentConfig;
+  config?: IWrtnAgentConfig<AgentExecutePlan>;
 
   /**
    * Prompt histories.
@@ -62,14 +71,4 @@ export interface IWrtnAgentProps {
    * assign the previouis prompt histories to this property.
    */
   histories?: Primitive<IWrtnAgentPrompt>[];
-
-  /**
-   * Agent execution plan.
-   *
-   * If you want to customize the agent execution plan, you can assign
-   * the function to this property.
-   *
-   * @default {@link ChatGptAgent.execute}
-   */
-  agentExecutionPlan?: (ctx: IWrtnAgentContext) => Promise<IWrtnAgentPrompt[]>;
 }

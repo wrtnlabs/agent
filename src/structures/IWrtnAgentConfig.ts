@@ -1,3 +1,4 @@
+import { IWrtnAdditionalAgent } from "./IWrtnAdditionalAgent";
 import { IWrtnAgentSystemPrompt } from "./IWrtnAgentSystemPrompt";
 
 /**
@@ -16,7 +17,17 @@ import { IWrtnAgentSystemPrompt } from "./IWrtnAgentSystemPrompt";
  *
  * @author Samchon
  */
-export interface IWrtnAgentConfig {
+export interface IWrtnAgentConfig<
+  AgentExecutePlan extends Record<
+    string,
+    IWrtnAdditionalAgent<keyof AgentExecutePlan>
+  > = Record<
+    keyof typeof IWrtnAdditionalAgent.DEFAULT_CHATGPT_AGENT,
+    IWrtnAdditionalAgent<
+      keyof typeof IWrtnAdditionalAgent.DEFAULT_CHATGPT_AGENT
+    >
+  >,
+> {
   /**
    * Locale of the A.I. chatbot.
    *
@@ -95,5 +106,64 @@ export interface IWrtnAgentConfig {
    * System prompt messages if you want to customize the system prompt
    * messages for each situation.
    */
-  systemPrompt?: IWrtnAgentSystemPrompt;
+  systemPrompt?: IWrtnAgentSystemPrompt<AgentExecutePlan>;
+
+  /**
+   * Agent execute plan.
+   *
+   * Agent execute plan if you want to customize the agent execute plan.
+   * This pattern like Finite State Machine (FSM).
+   *
+   * Default Agent List:
+   * - initialize
+   * - select
+   * - execute
+   * - describe
+   * - cancel_unexecuted
+   * - cancel_completed
+   *
+   * Default Agent Flow
+   * ```mermaid
+   * stateDiagram-v2
+   * direction LR
+   * Initialize --> Cancel Unexecuted
+   * Initialize --> Select
+
+   * Cancel Unexecuted --> Select
+   *
+   * Select --> Execute
+   *
+   * Execute --> Cancel Completed
+   * Cancel Completed --> Describe
+   * Execute --> Describe
+   * Describe --> Execute
+   * ```
+   *
+   * @example
+   * ```ts
+   * {
+   *   agentExecutePlan: [
+   *     {
+   *       name: "inject_additional_prompt",
+   *       execute: async (ctx) => {
+   *         ctx.prompt.text += "Remind, you are a helpful assistant.";
+   *       },
+   *       nextAgent: async () => "select" as const,
+   *     },
+   *   ],
+   * }
+   */
+  agentExecutePlan?: {
+    [Key in keyof AgentExecutePlan]: Key extends keyof typeof IWrtnAdditionalAgent.DEFAULT_CHATGPT_AGENT
+      ? Partial<AgentExecutePlan[Key]>
+      : AgentExecutePlan[Key];
+  };
+  a?: keyof AgentExecutePlan;
+}
+
+export namespace IWrtnAgentConfig {
+  export type WithoutAgentExecutePlan = Omit<
+    IWrtnAgentConfig<any>,
+    "agentExecutePlan"
+  >;
 }

@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 
 import { WrtnAgentSource } from "../typings/WrtnAgentSource";
+import { IWrtnAdditionalAgent } from "./IWrtnAdditionalAgent";
 import { IWrtnAgentConfig } from "./IWrtnAgentConfig";
 import { IWrtnAgentEvent } from "./IWrtnAgentEvent";
 import { IWrtnAgentOperationCollection } from "./IWrtnAgentOperationCollection";
@@ -59,7 +60,7 @@ export interface IWrtnAgentContext {
    *
    * @todo Write detaily after supporting the agent customization feature
    */
-  config: IWrtnAgentConfig | undefined;
+  config: Omit<IWrtnAgentConfig<any>, "agentExecutePlan">;
 
   //----
   // STATES
@@ -125,4 +126,15 @@ export interface IWrtnAgentContext {
    * Initialize the agent.
    */
   initialize: () => Promise<void>;
+}
+
+export namespace IWrtnAgentContext {
+  export type WithAgentExecutePlan<
+    AgentExecutePlan extends Record<
+      string,
+      IWrtnAdditionalAgent<keyof AgentExecutePlan>
+    >,
+  > = IWrtnAgentContext & {
+    config: IWrtnAgentConfig<AgentExecutePlan>;
+  };
 }

@@ -200,7 +200,7 @@ export namespace ChatGptExecuteFunctionAgent {
           (success === false
             ? await correct(ctx, call, retry, response.body)
             : null) ??
-          (await WrtnAgentPromptFactory.execute({
+          WrtnAgentPromptFactory.execute({
             type: "execute",
             protocol: "http",
             controller: call.operation.controller,
@@ -209,7 +209,7 @@ export namespace ChatGptExecuteFunctionAgent {
             name: call.operation.name,
             arguments: call.arguments,
             value: response,
-          }))
+          })
         );
       } catch (error) {
         // DISPATCH ERROR

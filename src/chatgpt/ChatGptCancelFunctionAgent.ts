@@ -95,7 +95,9 @@ export namespace ChatGptCancelFunctionAgent {
     );
     if (index === -1) return null;
 
-    const item: IWrtnAgentOperationSelection = ctx.stack[index]!;
+    const item = ctx.stack[index];
+    if (item === undefined) return null;
+
     ctx.stack.splice(index, 1);
     await ctx.dispatch({
       type: "cancel",

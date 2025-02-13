@@ -1,3 +1,4 @@
+import { IWrtnAdditionalAgent } from "./IWrtnAdditionalAgent";
 import { IWrtnAgentConfig } from "./IWrtnAgentConfig";
 import { IWrtnAgentPrompt } from "./IWrtnAgentPrompt";
 
@@ -19,7 +20,11 @@ import { IWrtnAgentPrompt } from "./IWrtnAgentPrompt";
  *
  * @author Samchon
  */
-export interface IWrtnAgentSystemPrompt {
+export interface IWrtnAgentSystemPrompt<
+  AgentExecutePlan extends {
+    [Key in string]: IWrtnAdditionalAgent<keyof AgentExecutePlan>;
+  },
+> {
   /**
    * Common system prompt that would be used in every situation.
    *
@@ -27,7 +32,7 @@ export interface IWrtnAgentSystemPrompt {
    * @returns The common system prompt
    * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/common.md
    */
-  common?: (config?: IWrtnAgentConfig | undefined) => string;
+  common?: (config?: IWrtnAgentConfig.WithoutAgentExecutePlan) => string;
 
   /**
    * Initialize system prompt.

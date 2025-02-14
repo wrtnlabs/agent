@@ -17,17 +17,7 @@ import { IWrtnAgentSystemPrompt } from "./IWrtnAgentSystemPrompt";
  *
  * @author Samchon
  */
-export interface IWrtnAgentConfig<
-  AgentExecutePlan extends Record<
-    string,
-    IWrtnAdditionalAgent<keyof AgentExecutePlan>
-  > = Record<
-    keyof typeof IWrtnAdditionalAgent.DEFAULT_CHATGPT_AGENT,
-    IWrtnAdditionalAgent<
-      keyof typeof IWrtnAdditionalAgent.DEFAULT_CHATGPT_AGENT
-    >
-  >,
-> {
+export interface IWrtnAgentConfig {
   /**
    * Locale of the A.I. chatbot.
    *
@@ -106,7 +96,7 @@ export interface IWrtnAgentConfig<
    * System prompt messages if you want to customize the system prompt
    * messages for each situation.
    */
-  systemPrompt?: IWrtnAgentSystemPrompt<AgentExecutePlan>;
+  systemPrompt?: IWrtnAgentSystemPrompt;
 
   /**
    * Agent execute plan.
@@ -153,17 +143,12 @@ export interface IWrtnAgentConfig<
    *   ],
    * }
    */
-  agentExecutePlan?: {
-    [Key in keyof AgentExecutePlan]: Key extends keyof typeof IWrtnAdditionalAgent.DEFAULT_CHATGPT_AGENT
-      ? Partial<AgentExecutePlan[Key]>
-      : AgentExecutePlan[Key];
-  };
-  a?: keyof AgentExecutePlan;
+  agentExecutePlan?: Record<string, IWrtnAdditionalAgent>;
 }
 
 export namespace IWrtnAgentConfig {
   export type WithoutAgentExecutePlan = Omit<
-    IWrtnAgentConfig<any>,
+    IWrtnAgentConfig,
     "agentExecutePlan"
   >;
 }

@@ -43,20 +43,7 @@ import { IWrtnAgentTokenUsage } from "./structures/IWrtnAgentTokenUsage";
  *
  * @author Samchon
  */
-export class WrtnAgent<
-  const AgentExecutePlan extends Record<
-    string,
-    IWrtnAdditionalAgent<
-      | keyof AgentExecutePlan
-      | keyof typeof IWrtnAdditionalAgent.DEFAULT_CHATGPT_AGENT
-    >
-  > = Record<
-    keyof typeof IWrtnAdditionalAgent.DEFAULT_CHATGPT_AGENT,
-    IWrtnAdditionalAgent<
-      keyof typeof IWrtnAdditionalAgent.DEFAULT_CHATGPT_AGENT
-    >
-  >,
-> {
+export class WrtnAgent {
   // THE OPERATIONS
   private readonly operations_: IWrtnAgentOperationCollection;
 
@@ -67,7 +54,7 @@ export class WrtnAgent<
     string,
     Set<(event: IWrtnAgentEvent) => void | Promise<void>>
   >;
-  private readonly config_: IWrtnAgentConfig<AgentExecutePlan>;
+  private readonly config_: IWrtnAgentConfig;
 
   // STATUS
   private readonly token_usage_: IWrtnAgentTokenUsage;
@@ -81,9 +68,7 @@ export class WrtnAgent<
    *
    * @param props Properties to construct the agent
    */
-  public constructor(
-    private readonly props: IWrtnAgentProps<AgentExecutePlan>,
-  ) {
+  public constructor(private readonly props: IWrtnAgentProps) {
     // OPERATIONS
     this.config_ = {
       ...props.config,
@@ -99,9 +84,9 @@ export class WrtnAgent<
             );
             return acc;
           },
-          {} as Record<string, IWrtnAdditionalAgent<keyof AgentExecutePlan>>,
+          {} as Record<string, IWrtnAdditionalAgent<string>>,
         ),
-      ) as unknown as AgentExecutePlan,
+      ),
     };
 
     this.operations_ = WrtnAgentOperationComposer.compose({
@@ -216,7 +201,7 @@ export class WrtnAgent<
   /**
    * Get configuration.
    */
-  public getConfig(): IWrtnAgentConfig<AgentExecutePlan> {
+  public getConfig(): IWrtnAgentConfig {
     return this.config_;
   }
 

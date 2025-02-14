@@ -1,4 +1,3 @@
-import { IWrtnAdditionalAgent } from "../structures/IWrtnAdditionalAgent";
 import { IWrtnAgentConfig } from "../structures/IWrtnAgentConfig";
 import { IWrtnAgentController } from "../structures/IWrtnAgentController";
 import { IWrtnAgentOperation } from "../structures/IWrtnAgentOperation";
@@ -6,14 +5,9 @@ import { IWrtnAgentOperationCollection } from "../structures/IWrtnAgentOperation
 import { __map_take } from "./__map_take";
 
 export namespace WrtnAgentOperationComposer {
-  export const compose = <
-    AgentExecutePlan extends Record<
-      string,
-      IWrtnAdditionalAgent<keyof AgentExecutePlan>
-    >,
-  >(props: {
+  export const compose = (props: {
     controllers: IWrtnAgentController[];
-    config?: IWrtnAgentConfig<AgentExecutePlan>;
+    config?: IWrtnAgentConfig;
   }): IWrtnAgentOperationCollection => {
     const unique: boolean =
       props.controllers.length === 1 ||

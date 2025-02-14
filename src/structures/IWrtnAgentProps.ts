@@ -1,6 +1,5 @@
 import { Primitive } from "typia";
 
-import { IWrtnAdditionalAgent } from "./IWrtnAdditionalAgent";
 import { IWrtnAgentConfig } from "./IWrtnAgentConfig";
 import { IWrtnAgentController } from "./IWrtnAgentController";
 import { IWrtnAgentPrompt } from "./IWrtnAgentPrompt";
@@ -27,16 +26,7 @@ import { IWrtnAgentProvider } from "./IWrtnAgentProvider";
  *
  * @author Samchon
  */
-export interface IWrtnAgentProps<
-  AgentExecutePlan extends Record<
-    | keyof AgentExecutePlan
-    | keyof typeof IWrtnAdditionalAgent.DEFAULT_CHATGPT_AGENT,
-    IWrtnAdditionalAgent<
-      | keyof AgentExecutePlan
-      | keyof typeof IWrtnAdditionalAgent.DEFAULT_CHATGPT_AGENT
-    >
-  >,
-> {
+export interface IWrtnAgentProps {
   /**
    * LLM service provider.
    */
@@ -62,7 +52,7 @@ export interface IWrtnAgentProps<
    * - `systemPrompt`: default prompts written in markdown
    *   - https://github.com/samchon/nestia/tree/master/packages/agent/prompts
    */
-  config?: IWrtnAgentConfig<AgentExecutePlan>;
+  config?: IWrtnAgentConfig;
 
   /**
    * Prompt histories.

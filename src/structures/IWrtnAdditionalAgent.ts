@@ -8,7 +8,9 @@ import { IWrtnAgentContext } from "./IWrtnAgentContext";
 import { IWrtnAgentEvent } from "./IWrtnAgentEvent";
 import { IWrtnAgentPrompt } from "./IWrtnAgentPrompt";
 
-export interface IWrtnAdditionalAgent<AgentExecutePlanKeys extends keyof any> {
+export interface IWrtnAdditionalAgent<
+  AgentExecutePlanKeys extends keyof any = string,
+> {
   /**
    * The event of agent execution.
    */
@@ -108,7 +110,7 @@ export namespace IWrtnAdditionalAgent {
           IWrtnAdditionalAgent<keyof AgentExecutePlan>
         >,
       >(
-        ctx: IWrtnAgentContext.WithAgentExecutePlan<AgentExecutePlan>,
+        ctx: IWrtnAgentContext,
         previousAgentExecuteResult: IWrtnAgentPrompt[],
       ): Awaitable<IWrtnAgentPrompt[]> => {
         const executed: IWrtnAgentPrompt.IExecute[] =

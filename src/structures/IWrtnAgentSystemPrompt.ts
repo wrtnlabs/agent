@@ -1,4 +1,3 @@
-import { IWrtnAdditionalAgent } from "./IWrtnAdditionalAgent";
 import { IWrtnAgentConfig } from "./IWrtnAgentConfig";
 import { IWrtnAgentPrompt } from "./IWrtnAgentPrompt";
 
@@ -20,11 +19,7 @@ import { IWrtnAgentPrompt } from "./IWrtnAgentPrompt";
  *
  * @author Samchon
  */
-export interface IWrtnAgentSystemPrompt<
-  AgentExecutePlan extends {
-    [Key in string]: IWrtnAdditionalAgent<keyof AgentExecutePlan>;
-  },
-> {
+export interface IWrtnAgentSystemPrompt {
   /**
    * Common system prompt that would be used in every situation.
    *

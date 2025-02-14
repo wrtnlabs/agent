@@ -7,7 +7,7 @@ import { __map_take } from "./__map_take";
 export namespace WrtnAgentOperationComposer {
   export const compose = (props: {
     controllers: IWrtnAgentController[];
-    config?: IWrtnAgentConfig | undefined;
+    config?: IWrtnAgentConfig;
   }): IWrtnAgentOperationCollection => {
     const unique: boolean =
       props.controllers.length === 1 ||

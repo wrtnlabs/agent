@@ -1,3 +1,4 @@
+import { IWrtnAdditionalAgent } from "./IWrtnAdditionalAgent";
 import { IWrtnAgentSystemPrompt } from "./IWrtnAgentSystemPrompt";
 
 /**
@@ -96,4 +97,58 @@ export interface IWrtnAgentConfig {
    * messages for each situation.
    */
   systemPrompt?: IWrtnAgentSystemPrompt;
+
+  /**
+   * Agent execute plan.
+   *
+   * Agent execute plan if you want to customize the agent execute plan.
+   * This pattern like Finite State Machine (FSM).
+   *
+   * Default Agent List:
+   * - initialize
+   * - select
+   * - execute
+   * - describe
+   * - cancel_unexecuted
+   * - cancel_completed
+   *
+   * Default Agent Flow
+   * ```mermaid
+   * stateDiagram-v2
+   * direction LR
+   * Initialize --> Cancel Unexecuted
+   * Initialize --> Select
+
+   * Cancel Unexecuted --> Select
+   *
+   * Select --> Execute
+   *
+   * Execute --> Cancel Completed
+   * Cancel Completed --> Describe
+   * Execute --> Describe
+   * Describe --> Execute
+   * ```
+   *
+   * @example
+   * ```ts
+   * {
+   *   agentExecutePlan: [
+   *     {
+   *       name: "inject_additional_prompt",
+   *       execute: async (ctx) => {
+   *         ctx.prompt.text += "Remind, you are a helpful assistant.";
+   *       },
+   *       nextAgent: async () => "select" as const,
+   *     },
+   *   ],
+   * }
+   */
+  agentExecutePlan?: Record<string, IWrtnAdditionalAgent>;
+}
+
+export namespace IWrtnAgentConfig {
+  export type WithoutAgentExecutePlan = Omit<
+    IWrtnAgentConfig,
+    "agentExecutePlan"
+  >;
 }

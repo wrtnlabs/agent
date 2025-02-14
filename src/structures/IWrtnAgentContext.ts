@@ -59,7 +59,7 @@ export interface IWrtnAgentContext {
    *
    * @todo Write detaily after supporting the agent customization feature
    */
-  config: IWrtnAgentConfig | undefined;
+  config: IWrtnAgentConfig;
 
   //----
   // STATES

@@ -5,8 +5,8 @@ import { WrtnAgentCostAggregator } from "./internal/WrtnAgentCostAggregator";
 import { WrtnAgentOperationComposer } from "./internal/WrtnAgentOperationComposer";
 import { WrtnAgentPromptTransformer } from "./internal/WrtnAgentPromptTransformer";
 import { __map_take } from "./internal/__map_take";
+import { IWrtnAdditionalAgent } from "./structures/IWrtnAdditionalAgent";
 import { IWrtnAgentConfig } from "./structures/IWrtnAgentConfig";
-import { IWrtnAgentContext } from "./structures/IWrtnAgentContext";
 import { IWrtnAgentController } from "./structures/IWrtnAgentController";
 import { IWrtnAgentEvent } from "./structures/IWrtnAgentEvent";
 import { IWrtnAgentOperationCollection } from "./structures/IWrtnAgentOperationCollection";
@@ -50,14 +50,15 @@ export class WrtnAgent {
   // STACK
   private readonly stack_: IWrtnAgentOperationSelection[];
   private readonly prompt_histories_: IWrtnAgentPrompt[];
-  private readonly listeners_: Map<string, Set<Function>>;
+  private readonly listeners_: Map<
+    string,
+    Set<(event: IWrtnAgentEvent) => void | Promise<void>>
+  >;
+  private readonly config_: IWrtnAgentConfig;
 
   // STATUS
   private readonly token_usage_: IWrtnAgentTokenUsage;
   private ready_: boolean;
-  private readonly agentExecutionPlan_: (
-    ctx: IWrtnAgentContext,
-  ) => Promise<IWrtnAgentPrompt[]>;
 
   /* -----------------------------------------------------------
     CONSTRUCTOR
@@ -69,9 +70,28 @@ export class WrtnAgent {
    */
   public constructor(private readonly props: IWrtnAgentProps) {
     // OPERATIONS
+    this.config_ = {
+      ...props.config,
+      agentExecutePlan: Object.assign(
+        {},
+        props.config?.agentExecutePlan ?? {},
+        Object.entries(IWrtnAdditionalAgent.DEFAULT_CHATGPT_AGENT).reduce(
+          (acc, [key, value]) => {
+            acc[key] = Object.assign(
+              {},
+              value,
+              props.config?.agentExecutePlan?.[key] ?? {},
+            );
+            return acc;
+          },
+          {} as Record<string, IWrtnAdditionalAgent<string>>,
+        ),
+      ),
+    };
+
     this.operations_ = WrtnAgentOperationComposer.compose({
       controllers: props.controllers,
-      config: props.config,
+      config: this.config_,
     });
 
     // STATUS
@@ -101,7 +121,6 @@ export class WrtnAgent {
       },
     };
     this.ready_ = false;
-    this.agentExecutionPlan_ = props.agentExecutionPlan ?? ChatGptAgent.execute;
   }
 
   /* -----------------------------------------------------------
@@ -127,10 +146,10 @@ export class WrtnAgent {
     };
     await this.dispatch(prompt);
 
-    const newbie: IWrtnAgentPrompt[] = await this.agentExecutionPlan_({
+    const newbie: IWrtnAgentPrompt[] = await ChatGptAgent.execute({
       // APPLICATION
       operations: this.operations_,
-      config: this.props.config,
+      config: this.config_,
 
       // STATES
       histories: this.prompt_histories_,
@@ -151,7 +170,6 @@ export class WrtnAgent {
           },
           options: this.props.provider.options,
         };
-        await this.dispatch(event);
 
         // completion
         const value: OpenAI.ChatCompletion =
@@ -183,8 +201,8 @@ export class WrtnAgent {
   /**
    * Get configuration.
    */
-  public getConfig(): IWrtnAgentConfig | undefined {
-    return this.props.config;
+  public getConfig(): IWrtnAgentConfig {
+    return this.config_;
   }
 
   /**
@@ -242,7 +260,9 @@ export class WrtnAgent {
     type: Type,
     listener: (event: IWrtnAgentEvent.Mapper[Type]) => void | Promise<void>,
   ): void {
-    __map_take(this.listeners_, type, () => new Set()).add(listener);
+    __map_take(this.listeners_, type, () => new Set()).add(
+      listener as (event: IWrtnAgentEvent) => void | Promise<void>,
+    );
   }
 
   /**
@@ -257,7 +277,9 @@ export class WrtnAgent {
     type: Type,
     listener: (event: IWrtnAgentEvent.Mapper[Type]) => void | Promise<void>,
   ): void {
-    const set: Set<Function> | undefined = this.listeners_.get(type);
+    const set:
+      | Set<(event: IWrtnAgentEvent.Mapper[Type]) => void | Promise<void>>
+      | undefined = this.listeners_.get(type);
     if (set) {
       set.delete(listener);
       if (set.size === 0) this.listeners_.delete(type);
@@ -267,13 +289,16 @@ export class WrtnAgent {
   private async dispatch<Event extends IWrtnAgentEvent>(
     event: Event,
   ): Promise<void> {
-    const set: Set<Function> | undefined = this.listeners_.get(event.type);
+    const set: Set<(event: Event) => void | Promise<void>> | undefined =
+      this.listeners_.get(event.type);
     if (set)
       await Promise.all(
         Array.from(set).map(async (listener) => {
           try {
             await listener(event);
-          } catch {}
+          } catch {
+            return;
+          }
         }),
       );
   }

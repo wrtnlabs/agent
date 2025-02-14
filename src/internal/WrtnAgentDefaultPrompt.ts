@@ -3,7 +3,9 @@ import { Singleton } from "./Singleton";
 import { WrtnAgentSystemPrompt } from "./WrtnAgentSystemPrompt";
 
 export namespace WrtnAgentDefaultPrompt {
-  export const write = (config?: IWrtnAgentConfig): string => {
+  export const write = (
+    config?: IWrtnAgentConfig.WithoutAgentExecutePlan,
+  ): string => {
     if (config?.systemPrompt?.common)
       return config?.systemPrompt?.common(config);
 

@@ -13,18 +13,11 @@ import { IWrtnAgentPrompt } from "./IWrtnAgentPrompt";
  *
  * @author Samchon
  */
-export type IWrtnAgentEvent =
-  | IWrtnAgentEvent.IInitialize
-  | IWrtnAgentEvent.ISelect
-  | IWrtnAgentEvent.ICancel
-  | IWrtnAgentEvent.ICall
-  | IWrtnAgentEvent.IExecute
-  | IWrtnAgentEvent.IDescribe
-  | IWrtnAgentEvent.IText
-  | IWrtnAgentEvent.IRequest
-  | IWrtnAgentEvent.IResponse;
+export type IWrtnAgentEvent<T extends IWrtnAgentEvent.IBase<string> = never> =
+  | IWrtnAgentEvent.Mapper[keyof IWrtnAgentEvent.Mapper]
+  | T;
 export namespace IWrtnAgentEvent {
-  export type Type = IWrtnAgentEvent["type"];
+  export type Type = Mapper[keyof Mapper]["type"];
   export type Mapper = {
     initialize: IInitialize;
     select: ISelect;
@@ -215,7 +208,7 @@ export namespace IWrtnAgentEvent {
     value: OpenAI.ChatCompletion;
   }
 
-  interface IBase<Type extends string> {
+  export interface IBase<Type extends string> {
     /**
      * Discriminator type.
      */

@@ -1,7 +1,6 @@
 import { Primitive } from "typia";
 
 import { IWrtnAgentConfig } from "./IWrtnAgentConfig";
-import { IWrtnAgentContext } from "./IWrtnAgentContext";
 import { IWrtnAgentController } from "./IWrtnAgentController";
 import { IWrtnAgentPrompt } from "./IWrtnAgentPrompt";
 import { IWrtnAgentProvider } from "./IWrtnAgentProvider";
@@ -62,14 +61,4 @@ export interface IWrtnAgentProps {
    * assign the previouis prompt histories to this property.
    */
   histories?: Primitive<IWrtnAgentPrompt>[];
-
-  /**
-   * Agent execution plan.
-   *
-   * If you want to customize the agent execution plan, you can assign
-   * the function to this property.
-   *
-   * @default {@link ChatGptAgent.execute}
-   */
-  agentExecutionPlan?: (ctx: IWrtnAgentContext) => Promise<IWrtnAgentPrompt[]>;
 }

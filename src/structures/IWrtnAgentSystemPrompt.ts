@@ -27,7 +27,7 @@ export interface IWrtnAgentSystemPrompt {
    * @returns The common system prompt
    * @default https://github.com/samchon/nestia/blob/master/packages/agent/prompts/common.md
    */
-  common?: (config?: IWrtnAgentConfig | undefined) => string;
+  common?: (config?: IWrtnAgentConfig.WithoutAgentExecutePlan) => string;
 
   /**
    * Initialize system prompt.

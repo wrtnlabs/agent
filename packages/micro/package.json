@@ -1,0 +1,59 @@
+{
+  "private": true,
+  "name": "@agentica/rpc",
+  "version": "0.7.0",
+  "main": "src/index.ts",
+  "description": "Agentic AI Library specialized in LLM Function Calling",
+  "scripts": {
+    "prepare": "ts-patch install",
+    "build": "rimraf lib && tsc && rollup -c",
+    "dev": "rimraf lib && tsc --watch"
+  },
+  "author": "Wrtn Technologies",
+  "homepage": "https://wrtnlabs.io/agentica",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wrtnlabs/agentica"
+  },
+  "bugs": {
+    "url": "https://github.com/wrtnlabs/agentica/issues"
+  },
+  "keywords": [
+    "openai",
+    "chatgpt",
+    "anthropic",
+    "claude",
+    "ai",
+    "chatbot",
+    "nestia",
+    "swagger",
+    "openapi"
+  ],
+  "files": [
+    "README.md",
+    "LICENSE",
+    "package.json",
+    "lib",
+    "src"
+  ],
+  "dependencies": {
+    "@agentica/core": "workspace:^",
+    "typia": "^8.0.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "@samchon/openapi": "^3.0.0",
+    "@types/node": "^22.13.4",
+    "rimraf": "^6.0.1",
+    "rollup": "^4.34.8",
+    "ts-patch": "^3.3.0",
+    "typedoc": "^0.27.7",
+    "typescript": "~5.7.3"
+  },
+  "peerDependencies": {
+    "@samchon/openapi": ">=3.0.0 <4.0.0",
+    "openai": ">=4.80.0"
+  }
+}

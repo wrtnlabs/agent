@@ -4,9 +4,13 @@ import {
   IAgenticaPrompt,
 } from "@agentica/core";
 import { ILlmSchema } from "@samchon/openapi";
-import { HttpError, IConnection, functional } from "@wrtnlabs/connector-hive";
+import {
+  HttpError,
+  IConnection,
+  functional,
+} from "@wrtnlabs/connector-hive-api";
 
-const useEmbededContext = <SchemaModel extends ILlmSchema.Model>() => {
+const useEmbeddedContext = <SchemaModel extends ILlmSchema.Model>() => {
   const set = new Set<IAgenticaContext<SchemaModel>>();
   return [
     (ctx: IAgenticaContext<SchemaModel>) => set.has(ctx),
@@ -33,8 +37,8 @@ export namespace ConnectorHiveAdapter {
     },
   ) => {
     const connection: IConnection = { host: connectorHiveHost };
-    const [isEmbededContext, setEmbededContext] =
-      useEmbededContext<SchemaModel>();
+    const [isEmbeddedContext, setEmbeddedContext] =
+      useEmbeddedContext<SchemaModel>();
     const embedOperation = async (op: IAgenticaOperation<SchemaModel>) => {
       const application = await functional.applications.by_names
         .getByName(connection, op.controller.name)
@@ -84,13 +88,13 @@ export namespace ConnectorHiveAdapter {
 
     const embedContext = async (ctx: IAgenticaContext<SchemaModel>) => {
       await Promise.all(ctx.operations.array.map(embedOperation));
-      setEmbededContext(ctx);
+      setEmbeddedContext(ctx);
     };
 
     const selectorExecute = async (
       ctx: IAgenticaContext<SchemaModel>,
     ): Promise<IAgenticaPrompt<SchemaModel>[]> => {
-      if (!isEmbededContext(ctx)) {
+      if (!isEmbeddedContext(ctx)) {
         await embedContext(ctx);
       }
 

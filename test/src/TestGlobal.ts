@@ -24,6 +24,10 @@ export class TestGlobal {
       to === -1 ? process.argv.length : to + from,
     );
   }
+
+  public static get connectorHivePort(): number {
+    return 37001;
+  }
 }
 
 interface IEnvironments {

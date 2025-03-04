@@ -1,0 +1,68 @@
+{
+  "name": "@agentica/connector-hive-adapter",
+  "version": "0.1.0",
+  "main": "lib/index.js",
+  "module": "lib/index.mjs",
+  "typings": "lib/index.d.ts",
+  "description": "Super A.I. Chatbot agent by Swagger Document",
+  "scripts": {
+    "build": "tsc && rollup -c",
+    "eslint": "eslint ./**/*.ts",
+    "test": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wrtnlabs/agent"
+  },
+  "keywords": [
+    "openai",
+    "chatgpt",
+    "anthropic",
+    "claude",
+    "ai",
+    "chatbot",
+    "nestia",
+    "swagger",
+    "openapi"
+  ],
+  "author": "Wrtn Technologies",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wrtnlabs/agent/issues"
+  },
+  "homepage": "https://wrtnlabs.io",
+  "files": [
+    "README.md",
+    "LICENSE",
+    "package.json",
+    "lib",
+    "prompts",
+    "src"
+  ],
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.1",
+    "@samchon/openapi": ">= 2.4.3",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "@types/node": "^22.10.5",
+    "@vitest/coverage-v8": "^3.0.6",
+    "@agentica/core": "workspace:^",
+    "chalk": "4.1.2",
+    "eslint": "^9.17.0",
+    "prettier": "^3.5.0",
+    "rimraf": "^6.0.1",
+    "rollup": "^4.29.1",
+    "typescript": "~5.7.3",
+    "typescript-eslint": "^8.18.2",
+    "typescript-transform-paths": "^3.5.3",
+    "typia": ">= 7.6.4",
+    "vitest": "^3.0.6"
+  },
+  "dependencies": {
+    "@wrtnlabs/connector-hive": "file:./wrtnlabs-connector-hive-api-1.0.0.tgz"
+  },
+  "peerDependencies": {
+    "@agentica/core": "workspace:^"
+  }
+}

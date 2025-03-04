@@ -19,6 +19,7 @@
     "@nestia/e2e": "^0.8.2",
     "@samchon/openapi": "^3.0.0",
     "@samchon/shopping-api": "^0.16.0",
+    "@wrtnlabs/connector-hive-api": "^1.4.0",
     "chalk": "4.1.2",
     "dotenv": "^16.4.7",
     "dotenv-expand": "^12.0.1",
